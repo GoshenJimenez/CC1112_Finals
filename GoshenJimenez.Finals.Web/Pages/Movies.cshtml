@@ -1,0 +1,31 @@
+@page "/movies"
+@model Movies
+
+
+<h1>Movies</h1>
+
+
+ <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Director</th>
+        <th>Release</th>
+        <th>Net Profit</th>        
+        <th>Genre</th>                
+      </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach(var movie in Model!.Items!){
+            <tr>
+                <td>@movie.Title</td>
+                <td>@movie.Director</td>
+                <td>@movie.Release!.Value.ToString("MMMM dd, yyyy")</td>
+                <td>@string.Format("{0:C}", movie.NetProfit)</td>
+                <td>@movie.Genre</td>        
+            </tr>
+            }
+        }
+    </tbody>
+  </table>
