@@ -13,9 +13,9 @@ public class Movies : PageModel
         _logger = logger;
     }
 
-    public void OnGet()
+    public void OnGet(string? sortBy = "title", string? sortDir = "asc")
     {
-        this.Items = new List<Movie>()
+        var movies = new List<Movie>()
         {
             new Movie(){
                 Title = "Final Fantasy Advent Children",
@@ -53,6 +53,48 @@ public class Movies : PageModel
                 Genre = Genre.Suspense           
             }        
         };
+
+        if(sortBy!.ToLower() == "title" && sortDir!.ToLower() == "asc")
+        {
+            movies = movies.OrderBy(a => a.Title).ToList();
+        }
+        else if(sortBy!.ToLower() == "title" && sortDir!.ToLower() == "desc")
+        {
+            movies = movies.OrderByDescending(a => a.Title).ToList();
+        }
+        else if(sortBy!.ToLower() == "director" && sortDir!.ToLower() == "asc")
+        {
+            movies = movies.OrderBy(a => a.Director).ToList();
+        }
+        else if(sortBy!.ToLower() == "director" && sortDir!.ToLower() == "desc")
+        {
+            movies = movies.OrderByDescending(a => a.Director).ToList();
+        }
+        else if(sortBy!.ToLower() == "release" && sortDir!.ToLower() == "asc")
+        {
+            movies = movies.OrderBy(a => a.Release).ToList();
+        }
+        else if(sortBy!.ToLower() == "release" && sortDir!.ToLower() == "desc")
+        {
+            movies = movies.OrderByDescending(a => a.Release).ToList();
+        } 
+        else if(sortBy!.ToLower() == "netprofit" && sortDir!.ToLower() == "asc")
+        {
+            movies = movies.OrderBy(a => a.NetProfit).ToList();
+        }
+        else if(sortBy!.ToLower() == "netprofit" && sortDir!.ToLower() == "desc")
+        {
+            movies = movies.OrderByDescending(a => a.NetProfit).ToList();
+        } 
+        else if(sortBy!.ToLower() == "genre" && sortDir!.ToLower() == "asc")
+        {
+            movies = movies.OrderBy(a => a.Genre).ToList();
+        }
+        else if(sortBy!.ToLower() == "genre" && sortDir!.ToLower() == "desc")
+        {
+            movies = movies.OrderByDescending(a => a.Genre).ToList();
+        }                        
+        this.Items = movies;
     }
 
     public class Movie
