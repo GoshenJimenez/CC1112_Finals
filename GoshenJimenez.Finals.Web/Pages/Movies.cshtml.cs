@@ -8,12 +8,17 @@ public class Movies : PageModel
     private readonly ILogger<Movies> _logger;
     public List<Movie>? Items { get; set; }
 
+    [BindProperty]
+    public string? Keyword { get; set; }
+    [BindProperty]
+    public string? FilterBy { get; set; }
+
     public Movies(ILogger<Movies> logger)
     {
         _logger = logger;
     }
 
-    public void OnGet(string? sortBy = "title", string? sortDir = "asc")
+    public void OnGet(string? sortBy = "title", string? sortDir = "asc",string? filterBy = "title", string? keyword = "")
     {
         var movies = new List<Movie>()
         {
@@ -53,6 +58,56 @@ public class Movies : PageModel
                 Genre = Genre.Suspense           
             }        
         };
+
+        if(string.IsNullOrEmpty(filterBy)){
+            filterBy = "title";
+        };
+
+        this.FilterBy = filterBy;
+
+        if(!string.IsNullOrEmpty(keyword)){
+            if(filterBy!.ToLower() == "title"){
+                movies = movies.Where(
+                                    (a => a.Title != null 
+                                &&  a.Title.ToLower().Contains(keyword!.ToLower())
+                                )
+                            )
+                .ToList();
+            }else if(filterBy!.ToLower() == "director"){
+                movies = movies.Where(
+                                    (a => a.Director != null 
+                                &&  a.Director.ToLower().Contains(keyword!.ToLower())
+                                )
+                            )
+                .ToList();        
+            }
+            else if(filterBy!.ToLower() == "release"){
+                movies = movies.Where(
+                                    (a => a.Release != null 
+                                &&  a.Release!.Value.ToString("MMMM dd, yyyy").ToLower().Contains(keyword!.ToLower())
+                                )
+                            )
+                .ToList();        
+            } 
+            else if(filterBy!.ToLower() == "netprofit"){
+                movies = movies.Where(
+                                    (a => a.NetProfit != null 
+                                &&  string.Format("{0:C}", a.NetProfit).Contains(keyword!.ToLower())
+                                )
+                            )
+                .ToList();        
+            }
+            else if(filterBy!.ToLower() == "genre"){
+                movies = movies.Where(
+                                    (a => a.NetProfit != null 
+                                &&  a.Genre!.Value.ToString().Contains(keyword!.ToLower())
+                                )
+                            )
+                .ToList();        
+            } 
+
+            this.Keyword = keyword;                                   
+        }
 
         if(sortBy!.ToLower() == "title" && sortDir!.ToLower() == "asc")
         {

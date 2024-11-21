@@ -4,6 +4,19 @@
 
 <h1>Movies</h1>
 
+<div class="input-group mb-3">
+  <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Search By</button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="#" onclick="setSearchBy('title')">Title</a></li>
+    <li><a class="dropdown-item" href="#" onclick="setSearchBy('director')">Director</a></li>
+    <li><a class="dropdown-item" href="#" onclick="setSearchBy('release')">Relese</a></li>
+    <li><a class="dropdown-item" href="#" onclick="setSearchBy('netprofit')">NetProfit</a></li>
+    <li><a class="dropdown-item" href="#" onclick="setSearchBy('genre')">Genre</a></li>    
+  </ul>
+  <input type="text" class="form-control" aria-label="" id="search-by" disabled asp-for="@Model!.FilterBy">
+  <input type="text" class="form-control" aria-label="" id="search-keyword" asp-for="@Model!.Keyword">
+  <button class="btn btn-outline-secondary" type="button" onclick="search()">Search</button>
+</div>
 
  <table class="table table-striped">
     <thead>
@@ -64,3 +77,15 @@
         }
     </tbody>
   </table>
+
+
+
+  <script>
+    function setSearchBy(column){
+        $("#search-by").val(column);
+    }
+
+    function search(){
+        window.location = "movies?filterBy=" + $("#search-by").val() + "&keyword=" + $("#search-keyword").val() + "&sortBy=title&sortDir=asc";
+    }
+  </script>
