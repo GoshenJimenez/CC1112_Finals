@@ -78,7 +78,37 @@
     </tbody>
   </table>
 
+  <nav aria-label="...">
+    <ul class="pagination">
 
+      @{
+        if(this.Model.PrevPages.Count() > 0){
+          <li class="page-item">
+            <a class="page-link" href="~/movies?pageIndex=@(this.Model.PageIndex-1)">Previous</a>
+          </li>
+        }
+
+        foreach(int? pg in this.Model.PrevPages){
+          <li class="page-item"><a class="page-link" href="~/movies?pageIndex=@pg">@pg</a></li>
+        }        
+      }
+      <li class="page-item active" aria-current="page">
+        <a class="page-link" href="#">@this.Model.PageIndex</a>
+      </li>
+      @{
+        foreach(int? pg in this.Model.NextPages){
+          <li class="page-item"><a class="page-link" href="~/movies?pageIndex=@pg">@pg</a></li>
+        }        
+
+        if(this.Model.NextPages.Count() > 0){
+          <li class="page-item">
+            <a class="page-link" href="~/movies?pageIndex=@(this.Model.PageIndex+1)">Next</a>
+          </li>
+        }
+      }
+
+    </ul>
+  </nav>
 
   <script>
     function setSearchBy(column){

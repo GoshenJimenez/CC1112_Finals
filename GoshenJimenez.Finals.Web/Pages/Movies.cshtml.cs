@@ -13,12 +13,17 @@ public class Movies : PageModel
     [BindProperty]
     public string? FilterBy { get; set; }
 
+    public int? PageIndex { get; set; }
+    public int? PageSize { get; set; }
+    public List<int?> PrevPages { get; set; }
+    public List<int?> NextPages { get; set; }
+
     public Movies(ILogger<Movies> logger)
     {
         _logger = logger;
     }
 
-    public void OnGet(string? sortBy = "title", string? sortDir = "asc",string? filterBy = "title", string? keyword = "")
+    public void OnGet(int? pageIndex = 1, int? pageSize = 5, string? sortBy = "title", string? sortDir = "asc",string? filterBy = "title", string? keyword = "")
     {
         var movies = new List<Movie>()
         {
@@ -52,6 +57,76 @@ public class Movies : PageModel
             },
             new Movie(){
                 Title = "Poltergeist",
+                Director = "Tobe Hooper",
+                Release = DateTime.Parse("January 14, 1983"),
+                NetProfit = 121700000,
+                Genre = Genre.Suspense           
+            },  
+            new Movie(){
+                Title = "Final Fantasy Advent Children 1",
+                Director = "Tetsuya Nomura",
+                Release = DateTime.Parse("September 14, 2005"),
+                NetProfit = 15000000,
+                Genre = Genre.Fantasy
+            },
+            new Movie(){
+                Title = "The Notebook 1",
+                Director = "Nick Cassavetes",
+                Release = DateTime.Parse("September 15, 2004"),
+                NetProfit = 118300000,
+                Genre = Genre.Drama           
+            },
+            new Movie(){
+                Title = "Daddy Daycare 1",
+                Director = "Steve Carr",
+                Release = DateTime.Parse("August 20, 2003"),
+                NetProfit = 164400000,
+                Genre = Genre.Comedy           
+            },
+            new Movie(){
+                Title = "the Matrix 1",
+                Director = "Lana Wachowski, Lilly Wachowski",
+                Release = DateTime.Parse("May 26, 1999"),
+                NetProfit = 467600000,
+                Genre = Genre.SciFi           
+            },
+            new Movie(){
+                Title = "Poltergeist 1",
+                Director = "Tobe Hooper",
+                Release = DateTime.Parse("January 14, 1983"),
+                NetProfit = 121700000,
+                Genre = Genre.Suspense           
+            },  
+            new Movie(){
+                Title = "Final Fantasy Advent Children 2",
+                Director = "Tetsuya Nomura",
+                Release = DateTime.Parse("September 14, 2005"),
+                NetProfit = 15000000,
+                Genre = Genre.Fantasy
+            },
+            new Movie(){
+                Title = "The Notebook 2",
+                Director = "Nick Cassavetes",
+                Release = DateTime.Parse("September 15, 2004"),
+                NetProfit = 118300000,
+                Genre = Genre.Drama           
+            },
+            new Movie(){
+                Title = "Daddy Daycare 2",
+                Director = "Steve Carr",
+                Release = DateTime.Parse("August 20, 2003"),
+                NetProfit = 164400000,
+                Genre = Genre.Comedy           
+            },
+            new Movie(){
+                Title = "the Matrix 2",
+                Director = "Lana Wachowski, Lilly Wachowski",
+                Release = DateTime.Parse("May 26, 1999"),
+                NetProfit = 467600000,
+                Genre = Genre.SciFi           
+            },
+            new Movie(){
+                Title = "Poltergeist 2",
                 Director = "Tobe Hooper",
                 Release = DateTime.Parse("January 14, 1983"),
                 NetProfit = 121700000,
@@ -148,8 +223,47 @@ public class Movies : PageModel
         else if(sortBy!.ToLower() == "genre" && sortDir!.ToLower() == "desc")
         {
             movies = movies.OrderByDescending(a => a.Genre).ToList();
-        }                        
-        this.Items = movies;
+        }
+
+        var pageCount = (int)Math.Ceiling((double)movies.Count() / (double)pageSize!.Value);
+        var skip = pageSize * (pageIndex - 1);
+
+        int? prev1 = ((pageIndex - 1) > 0) ? (pageIndex - 1) : null;
+        int? prev2 = ((pageIndex - 2) > 0) ? (pageIndex - 2) : null;
+        int? prev3 = ((pageIndex - 3) > 0) ? (pageIndex - 3) : null;
+
+        int? next1 = ((pageIndex + 1) <= pageCount) ?(pageIndex + 1) : null;
+        int? next2 = ((pageIndex + 2) <= pageCount) ?(pageIndex + 2) : null;
+        int? next3 = ((pageIndex + 3) <= pageCount) ?(pageIndex + 3) : null;
+
+        var prevPages = new List<int?>();
+        if(prev1 != null)
+            prevPages.Add(prev1); 
+        
+        if(prev2 != null)
+            prevPages.Add(prev2);
+        
+        if(prev3 != null)
+            prevPages.Add(prev3);     
+
+        var nextPages = new List<int?>();
+        if(next1 != null)
+            nextPages.Add(next1); 
+        
+        if(next2 != null)
+            nextPages.Add(next2);
+        
+        if(next3 != null)
+            nextPages.Add(next3);     
+
+        if(skip == null)
+            skip = 0;
+
+        this.Items = movies.Skip(skip!.Value).Take(pageSize.Value).ToList();
+        this.PageIndex = pageIndex;
+        this.PageSize = pageSize;
+        this.PrevPages = prevPages.OrderBy(a => a).ToList();
+        this.NextPages = nextPages.OrderBy(a => a).ToList();
     }
 
     public class Movie
